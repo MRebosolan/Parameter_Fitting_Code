@@ -23,7 +23,7 @@ df3 = pd.DataFrame()
 yield_strengths = []
 
 for i in range(len(temp_array)):
-    strain = np.arange(0, 0.02, 0.0001)
+    strain = np.arange(0, 0.02, 0.00001)
     stress = recreatecurves(strain, *C_rate_1[i, :])
     slope = find_slope(strain, stress)
     df1["strain"] = strain
@@ -34,7 +34,7 @@ for i in range(len(temp_array)):
     #plt.plot(strain, stress, label=f"T = {temp_array[i] - 273.15}")
 
 for i in range(len(temp_array)):
-    strain = np.arange(0, 0.02, 0.0001)
+    strain = np.arange(0, 0.02, 0.00001)
     stress = recreatecurves(strain, *C_rate_2[i, :])
     slope = find_slope(strain, stress)
     df2["strain"] = strain
@@ -45,7 +45,7 @@ for i in range(len(temp_array)):
     #plt.plot(strain, stress, label=f"T = {temp_array[i] - 273.15}")
 
 for i in range(len(temp_array)):
-    strain = np.arange(0, 0.02, 0.0001)
+    strain = np.arange(0, 0.02, 0.00001)
     stress = recreatecurves(strain, *C_rate_3[i, :])
     slope = find_slope(strain, stress)
     df3["strain"] = strain

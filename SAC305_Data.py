@@ -2,6 +2,7 @@ import numpy as np
 from math import *
 import matplotlib.pyplot as plt
 import pandas as pd
+from Functions import *
 
 def recreatecurves(strain, C1, C2, C3, C4):
     stress = C1 * np.tanh(C2*strain) + C3 * np.tanh(C4*strain)
@@ -23,32 +24,51 @@ df1 = pd.DataFrame()
 df2 = pd.DataFrame()
 df3 = pd.DataFrame()
 
+yield_strengths = []
+
 for i in range(len(temp_array)):
-    strain = np.arange(0, 0.02, 0.0001)
-    stress = recreatecurves(strain, *C_rate_1[i, :])                   #EACH FOR LOOP IS A DIFFERENT STRAIN RATE
+    strain = np.arange(0, 0.02, 0.00001)
+    stress = recreatecurves(strain, *C_rate_1[i, :])
+    slope = find_slope(strain, stress)
     df1["strain"] = strain
     df1[f'stress T={temp_array[i]-273.15}'] = stress
-    #plt.plot(strain, stress, label=f"T = {temp_array[i]-273.15}")
+    line02 = slope[1]
+    df1[f'modulus T={temp_array[i] - 273.15}'] = np.ones(len(strain)) * yield2percent(stress, line02)
+    yield_strengths.append([yield2percent(stress, line02), temp_array[i]])
+    #plt.plot(strain, stress, label=f"T = {temp_array[i] - 273.15}")
 
 for i in range(len(temp_array)):
     strain = np.arange(0, 0.02, 0.00001)
     stress = recreatecurves(strain, *C_rate_2[i, :])
+    slope = find_slope(strain, stress)
     df2["strain"] = strain
     df2[f'stress T={temp_array[i]-273.15}'] = stress
-
+    line02 = slope[1]
+    df2[f'modulus T={temp_array[i] - 273.15}'] = np.ones(len(strain)) * yield2percent(stress, line02)
+    yield_strengths.append([yield2percent(stress, line02), temp_array[i]])
+    #plt.plot(strain, stress, label=f"T = {temp_array[i] - 273.15}")
 
 for i in range(len(temp_array)):
-    strain = np.arange(0, 0.02, 0.000001)
+    strain = np.arange(0, 0.02, 0.00001)
     stress = recreatecurves(strain, *C_rate_3[i, :])
+    slope = find_slope(strain, stress)
     df3["strain"] = strain
     df3[f'stress T={temp_array[i]-273.15}'] = stress
-    plt.plot(strain, stress, label=f"T = {temp_array[i]-273.15}")
+    line02 = slope[1]
+    df2[f'modulus T={temp_array[i] - 273.15}'] = np.ones(len(strain)) * yield2percent(stress, line02)
+    yield_strengths.append([yield2percent(stress, line02), temp_array[i]])
+    plt.plot(strain, stress, label=f"T = {temp_array[i] - 273.15}")
+    plt.plot(strain, slope[1], label=f"T = {temp_array[i] - 273.15}")
+    plt.xlim((0, 0.004))
+    plt.ylim((0, 70))
+    plt.grid()
+    plt.legend()
+    plt.show()
 
 
-
-plt.title(f"SAC305, strain rate: {strain_rates[0]} sec-1")
-plt.grid()
-plt.xlabel("strain (-)")
-plt.ylabel("stress (MPa)")
-plt.legend()
-plt.show()
+# plt.title(f"SAC305, strain rate: {strain_rates[0]} sec-1")
+# plt.grid()
+# plt.xlabel("strain (-)")
+# plt.ylabel("stress (MPa)")
+# plt.legend()
+# plt.show()
