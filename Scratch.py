@@ -32,6 +32,9 @@ for i in range(len(temp_array)):
     df1[f'modulus T={temp_array[i]-273.15}'], line02 = slope
     df1[f'modulus T={temp_array[i] - 273.15}'] = np.ones(len(strain)) * yield2percent(stress, line02)
     yield_strengths.append([yield2percent(stress, line02), temp_array[i]])
+
+
+
     #plt.plot(strain, stress, label=f"T = {temp_array[i] - 273.15}")
 
 
@@ -44,6 +47,8 @@ for i in range(len(temp_array)):
     df2[f'modulus T={temp_array[i]-273.15}'], line02 = slope
     df2[f'modulus T={temp_array[i] - 273.15}'] = np.ones(len(strain)) * yield2percent(stress, line02)
     yield_strengths.append([yield2percent(stress, line02), temp_array[i]])
+
+
     #plt.plot(strain, stress, label=f"T = {temp_array[i] - 273.15}")
 
 
@@ -56,30 +61,32 @@ for i in range(len(temp_array)):
     df3[f'modulus T={temp_array[i]-273.15}'], line02 = slope
     df3[f'modulus T={temp_array[i]-273.15}'] = np.ones(len(strain))*yield2percent(stress, line02)
     yield_strengths.append([yield2percent(stress, line02), temp_array[i]])
-    # plt.plot(strain, stress, label=f"T = {temp_array[i] - 273.15}")
-    # plt.plot(strain, slope[1], label=f"T = {temp_array[i] - 273.15}")
+    plt.plot(strain, stress, label=f"T = {temp_array[i] - 273.15}")
+    plt.plot(strain, slope[1], label=f"T = {temp_array[i] - 273.15}")
+    plt.xlim((0, 0.004))
+    plt.ylim((0, 70))
+    plt.legend()
+    plt.grid()
+    plt.show()
 
 yield_strengths = np.array(yield_strengths)
+print(yield_strengths)
 
-y02_1, T02_1 = yield_strengths[:8, 0], yield_strengths[:8, 1]
-y02_2, T02_2 = yield_strengths[8:16, 0], yield_strengths[8:16, 1]
-y02_3, T02_3 = yield_strengths[16:, 0], yield_strengths[16:, 1]
+y02, T02 = yield_strengths[:, 0], yield_strengths[:, 1]
+slope, intercept, r, p, std_err = stats.linregress(T02[:8], y02[:8])
+slope2, intercept2, r2, p2, std_err2 = stats.linregress(T02[8:16], y02[8:16])
+slope3, intercept3, r3, p3, std_err3 = stats.linregress(T02[16:], y02[16:])
 
-plt.plot(T02_1, y02_1)
-plt.plot(T02_2, y02_2)
-plt.plot(T02_3, y02_3)
-plt.xlabel("Temperature (K)")
-plt.ylabel("Yield strength (MPa)")
+def linear_func1(x):
+    return slope*x + intercept
 
+def linear_func2(x):
+    return slope2*x + intercept2
 
+def linear_func3(x):
+    return slope3*x + intercept3
 
+model1 = list(map(linear_func1, np.arange(0, 500, 1)))
+model2 = list(map(linear_func2, np.arange(0, 500, 1)))
+model3 = list(map(linear_func3, np.arange(0, 500, 1)))
 
-# plt.xlabel(f"SACQ, strain rate: {strain_rates[2]} sec-1")
-# plt.ylabel("stress (MPa)")
-# plt.xlim((0, 0.005))
-# plt.ylim((0, 70))
-
-
-plt.grid()
-plt.legend()
-plt.show()

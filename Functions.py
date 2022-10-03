@@ -15,4 +15,6 @@ def yield2percent(x_array, y_array):
     minimum = np.min(diff)
     condition = (diff == minimum)
     location = np.where(condition)[0]
-    return y_array[location]
+    return float(y_array[location])
+
+
