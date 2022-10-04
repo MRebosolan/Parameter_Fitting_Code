@@ -65,21 +65,49 @@ y02_1, T02_1 = yield_strengths[:8, 0], yield_strengths[:8, 1]
 y02_2, T02_2 = yield_strengths[8:16, 0], yield_strengths[8:16, 1]
 y02_3, T02_3 = yield_strengths[16:, 0], yield_strengths[16:, 1]
 
-plt.plot(T02_1, y02_1)
-plt.plot(T02_2, y02_2)
-plt.plot(T02_3, y02_3)
+plt.scatter(T02_1, y02_1)
+plt.scatter(T02_2, y02_2)
+plt.scatter(T02_3, y02_3)
 plt.xlabel("Temperature (K)")
 plt.ylabel("Yield strength (MPa)")
 
+lm1 = stats.linregress(T02_1, y02_1)
+slope1, intercept1 = lm1.slope, lm1.intercept
+lm2 = stats.linregress(T02_2, y02_2)
+slope2, intercept2 = lm2.slope, lm2.intercept
+lm3 = stats.linregress(T02_3, y02_3)
+slope3, intercept3 = lm3.slope, lm3.intercept
 
 
+def linear_func1(x):
+    y = slope1*x + intercept1
+    return y
+def linear_func2(x):
+    y = slope2*x + intercept2
+    return y
+def linear_func3(x):
+    y = slope3*x + intercept3
+    return y
 
-# plt.xlabel(f"SACQ, strain rate: {strain_rates[2]} sec-1")
-# plt.ylabel("stress (MPa)")
-# plt.xlim((0, 0.005))
-# plt.ylim((0, 70))
+# FINDING YIELD STRENGTH AT 0K
 
+T_range = np.arange(0, 500, 1)
+y_lm1 = list(map(linear_func1, T_range))
+y_lm2 = list(map(linear_func2, T_range))
+y_lm3 = list(map(linear_func3, T_range))
+plt.plot(T_range, y_lm1)
+plt.plot(T_range, y_lm2)
+plt.plot(T_range, y_lm3)
+yieldT0 = sum([y_lm1[0], y_lm2[0], y_lm3[0]])/3
+print(yieldT0)
+
+# FINDING DELTA E
+
+for st in strain_rates:
+    for T in temp_array:
+        deltaE = -8.314*(log(st/strain_rates[0]))/((1/T)-(1/temp_array[0]))
+        print(st, T, deltaE)
 
 plt.grid()
 plt.legend()
-plt.show()
+#plt.show()
