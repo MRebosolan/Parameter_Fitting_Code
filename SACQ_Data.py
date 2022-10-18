@@ -1,7 +1,8 @@
 import numpy as np
 import pandas as pd
 from math import *
-from scipy import stats
+import scipy as sp
+
 import matplotlib.pyplot as plt
 from Functions import *
 
@@ -61,6 +62,7 @@ for i in range(len(temp_array)):
 
 yield_strengths = np.array(yield_strengths)
 
+
 y02_1, T02_1 = yield_strengths[:8, 0], yield_strengths[:8, 1]
 y02_2, T02_2 = yield_strengths[8:16, 0], yield_strengths[8:16, 1]
 y02_3, T02_3 = yield_strengths[16:, 0], yield_strengths[16:, 1]
@@ -71,11 +73,11 @@ plt.scatter(T02_3, y02_3)
 plt.xlabel("Temperature (K)")
 plt.ylabel("Yield strength (MPa)")
 
-lm1 = stats.linregress(T02_1, y02_1)
+lm1 = sp.stats.linregress(T02_1, y02_1)
 slope1, intercept1 = lm1.slope, lm1.intercept
-lm2 = stats.linregress(T02_2, y02_2)
+lm2 = sp.stats.linregress(T02_2, y02_2)
 slope2, intercept2 = lm2.slope, lm2.intercept
-lm3 = stats.linregress(T02_3, y02_3)
+lm3 = sp.stats.linregress(T02_3, y02_3)
 slope3, intercept3 = lm3.slope, lm3.intercept
 
 
@@ -99,15 +101,28 @@ plt.plot(T_range, y_lm1)
 plt.plot(T_range, y_lm2)
 plt.plot(T_range, y_lm3)
 yieldT0 = sum([y_lm1[0], y_lm2[0], y_lm3[0]])/3
-print(yieldT0)
 
-# FINDING DELTA E
 
-for st in strain_rates:
-    for T in temp_array:
-        deltaE = -8.314*(log(st/strain_rates[0]))/((1/T)-(1/temp_array[0]))
-        print(st, T, deltaE)
+# FINDING 4 FITTING PARAMETERS
 
-plt.grid()
-plt.legend()
-#plt.show()
+#CREATE COMBINATIONS OF T, STRAIN RATES
+
+predictor_array = []
+
+for sr in strain_rates:
+    for temp in temp_array:
+        predictor_array.append([sr, temp])
+
+predictor_array = np.array(predictor_array)
+
+# print(predictor_array)
+# print(yield_strengths[:, 0])
+
+p01 = np.array([1E5, 80000, 1.5, 0.5])
+bounds1 = ([1E2, 1000, 1, 0], [1e7, 200000, 2, 1])
+
+b1 = busso_stress(predictor_array, 1.7E5, 80000, 1.5, 0.5)
+print(b1)
+
+
+

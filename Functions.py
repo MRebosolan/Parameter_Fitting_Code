@@ -17,4 +17,8 @@ def yield2percent(x_array, y_array):
     location = np.where(condition)[0]
     return float(y_array[location])
 
-
+def busso_stress(predictor_array, eps0, F0, q, p, yield0=76.90427):
+    epsp, T = predictor_array[:, 0], predictor_array[:, 1]
+    theta0 = (F0/8.314)*1/(np.log(eps0/epsp))
+    sigma = yield0*(1-(T/theta0)**(1/q))**(1/p)
+    return sigma

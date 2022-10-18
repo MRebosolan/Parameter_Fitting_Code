@@ -26,6 +26,7 @@ for i in range(len(temp_array)):
     strain = np.arange(0, 0.02, 0.00001)
     stress = recreatecurves(strain, *C_rate_1[i, :])
     slope = find_slope(strain, stress)
+    print(slope)
     df1["strain"] = strain
     df1[f'stress T={temp_array[i]-273.15}'] = stress
     line02 = slope[1]
