@@ -22,7 +22,8 @@ for temp in temp_array:
     plt.plot(stress_array, n_list, "r")
     plt.plot(stress_array, g_list, "b")
     plt.xlim(0, 30)
-    plt.ylim(0, 0.005)
+    plt.ylim(0, 0.001)
+    plt.grid()
     plt.title(f"T={temp-273.15} C")
     plt.show()
 
