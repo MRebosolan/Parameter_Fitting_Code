@@ -1,6 +1,7 @@
 import numpy as np
 from math import *
 import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
 import pandas as pd
 from Functions import *
 
@@ -25,6 +26,7 @@ df2 = pd.DataFrame()
 df3 = pd.DataFrame()
 
 yield_strengths = []
+E_moduli = []
 
 for i in range(len(temp_array)):
     strain = np.arange(0, 0.02, 0.00001)
@@ -34,6 +36,8 @@ for i in range(len(temp_array)):
     df1[f'stress T={temp_array[i]-273.15}'] = stress
     line02 = slope[1]
     df1[f'modulus T={temp_array[i] - 273.15}'] = np.ones(len(strain)) * yield2percent(stress, line02)
+    E_modulus = slope[0][1]
+    E_moduli.append([E_modulus, temp_array[i]])
     yield_strengths.append([yield2percent(stress, line02), temp_array[i]])
     #plt.plot(strain, stress, label=f"T = {temp_array[i] - 273.15}")
 
@@ -45,6 +49,8 @@ for i in range(len(temp_array)):
     df2[f'stress T={temp_array[i]-273.15}'] = stress
     line02 = slope[1]
     df2[f'modulus T={temp_array[i] - 273.15}'] = np.ones(len(strain)) * yield2percent(stress, line02)
+    E_modulus = slope[0][1]
+    E_moduli.append([E_modulus, temp_array[i]])
     yield_strengths.append([yield2percent(stress, line02), temp_array[i]])
     #plt.plot(strain, stress, label=f"T = {temp_array[i] - 273.15}")
 
@@ -56,14 +62,26 @@ for i in range(len(temp_array)):
     df3[f'stress T={temp_array[i]-273.15}'] = stress
     line02 = slope[1]
     df2[f'modulus T={temp_array[i] - 273.15}'] = np.ones(len(strain)) * yield2percent(stress, line02)
+    E_modulus = slope[0][1]
+    E_moduli.append([E_modulus, temp_array[i]])
     yield_strengths.append([yield2percent(stress, line02), temp_array[i]])
-    plt.plot(strain, stress, label=f"T = {temp_array[i] - 273.15}")
-    plt.plot(strain, slope[1], label=f"T = {temp_array[i] - 273.15}")
-    plt.xlim((0, 0.004))
-    plt.ylim((0, 70))
-    plt.grid()
-    plt.legend()
-    plt.show()
+    # plt.plot(strain, stress, label=f"T = {temp_array[i] - 273.15}")
+    # plt.plot(strain, slope[1], label=f"T = {temp_array[i] - 273.15}")
+    # plt.xlim((0, 0.004))
+    # plt.ylim((0, 70))
+    # plt.grid()
+    # plt.legend()
+    #plt.show()
+
+E_moduli = np.array(E_moduli)
+x_fit, y_fit = E_moduli[:8, 1].reshape((-1, 1)), E_moduli[:8, 0]
+model = LinearRegression().fit(x_fit, y_fit)
+E_slope, E_intercept = model.coef_, model.intercept_ #DEPENCENCE OF E_MODULUS ON T
+print(E_slope, E_intercept)
+
+
+plt.scatter(E_moduli[:8, 1], E_moduli[:8, 0])
+
 
 
 # plt.title(f"SAC305, strain rate: {strain_rates[0]} sec-1")
@@ -71,4 +89,4 @@ for i in range(len(temp_array)):
 # plt.xlabel("strain (-)")
 # plt.ylabel("stress (MPa)")
 # plt.legend()
-# plt.show()
+plt.show()

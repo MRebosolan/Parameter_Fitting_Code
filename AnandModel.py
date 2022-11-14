@@ -36,5 +36,6 @@ for strain in strain_array:
 stress_array = np.array(stress_array)
 plt.plot(strain_array, stress_array)
 plt.grid()
+plt.ylim(0, 25)
 plt.title(f"T = {T-273.15} C, rate = {str_rate}")
 plt.show()
