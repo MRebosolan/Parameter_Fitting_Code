@@ -9,4 +9,4 @@ grades = np.array([8, 8, 7.5, 6.5, 7, 8, 6, 6.5, 8.5, 7.5, 9.5, 8.5, 8])
 weights = np.array([3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 5])
 gpa = sum(weights*grades)/sum(weights)
 
-print(gpa)
+print((7.137-5.625)*10**(-5)/500)
